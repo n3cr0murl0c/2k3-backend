@@ -1,0 +1,84 @@
+services:
+  backend:
+    build:
+      context: ./Source
+      dockerfile: Dockerfile
+    image: 2k3-backend:1.0.0
+    container_name: medusaBackend
+    restart: unless-stopped
+    depends_on:
+      - appPostgres
+      - appRedis
+    ports:
+      - "9000:9000"
+    #Para poner la TZ acorde al host
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./Server/uploads:/app/medusaBackend/uploads
+      # - medusaBackendVolume:/app/medusaBackend
+    env_file:
+      - ./Source/.env
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    networks:
+      backend:
+        ipv4_address: 10.10.1.2
+      frontend:
+        ipv4_address: 192.168.1.23
+
+  appPostgres:
+    image: postgres:latest
+    container_name: medusaBackendPostgres
+    restart: unless-stopped
+    # ports:
+    #   - "8032:5432"
+    #Para poner la TZ acorde al host
+    volumes:
+      - ./Server/backups:/docker-entrypoint-initdb.d
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - ./Server/database:/var/lib/postgresql/data
+
+    env_file:
+      - ./Source/.env
+    networks:
+      backend:
+        ipv4_address: 10.10.1.3
+  appRedis:
+    image: redis:alpine
+    container_name: medusaBackendCache
+    restart: unless-stopped
+    
+    
+    
+    volumes:
+      # - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      # REDIS_ARGS: ""
+      TZ: America/Guayaquil
+    # ports:
+    #   - "6379:6379"
+    depends_on:
+      - appPostgres
+    networks:
+      backend:
+        ipv4_address: 10.10.1.4
+
+networks:
+  backend:
+    name: delicor_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/16
+          gateway: 10.10.0.1
+  frontend:
+    name: proxy
+    external: true
+# volumes:
+# database:
+# medusaBackendVolume:

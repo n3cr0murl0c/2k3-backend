@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "allowJs": true,
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "sourceMap": false,
+    "declaration": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "esModuleInterop": true,
+
+    "strict": false,
+    "baseUrl": "src",
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+      "@services/*": ["services/*"],
+      "@subscribers/*": ["subscribers/*"],
+      "@utils/*": ["utils/*"],
+      "@screens/*": ["screens/*"],
+      "@hooks/*": ["hooks/*"],
+      "@providers/*": ["providers/*"],
+      "@emailtemplates/*": ["emailtemplates/*"]
+    }
+  },
+  "ts-node": {
+    "swc": true
+  },
+  "exclude": [
+    "**/__tests__",
+    "**/__fixtures__",
+    "node_modules",
+    "build",
+    ".cache"
+  ],
+  "include": ["src/**/*.tsx", "src/**/*.jsx", "src/**/*.ts", "src/**/*.js"]
+}
